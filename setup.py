@@ -151,7 +151,7 @@ setup(
     package_dir={
         'imagemodal': 'imagemodal',
     },
-    python_requires=">=3.12",
+    python_requires=">=3.11",
     license="AGPL 3.0",
     zip_safe=False,
     keywords='Python edx',

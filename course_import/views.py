@@ -22,7 +22,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from user_tasks.models import UserTaskStatus
 
-from .utils import course_author_access_required
+from cms.djangoapps.contentstore.api.views.utils import course_author_access_required
 
 log = logging.getLogger(__name__)
 
