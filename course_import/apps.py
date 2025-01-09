@@ -15,7 +15,7 @@ class CourseImportConfig(AppConfig):
         PluginURLs.CONFIG: {
             "lms.djangoapp": {
                 PluginURLs.NAMESPACE: "course_import",  # Define namesp
-                PluginURLs.REGEX: r"^courses_/",
+                PluginURLs.REGEX: r"^courses/",
                 PluginURLs.RELATIVE_PATH: "urls",
             },
             "cms.djangoapp": {
