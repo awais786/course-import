@@ -149,7 +149,7 @@ setup(
         ],
     },
     package_dir={
-        'imagemodal': 'imagemodal',
+        'course_import': 'imagemodal',
     },
     python_requires=">=3.11",
     license="AGPL 3.0",
