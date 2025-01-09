@@ -49,7 +49,7 @@ class GithubTemplatesPipeline(PipelineStep):
                         data = response.json()  # Attempt to parse JSON
                         if data:  # Check if the JSON is not empty
                             active_courses = [course for course in data if course['metadata'].get('active') is True]
-                            return []
+                            return active_courses
                         else:
                             return []
                     except ValueError as e:
