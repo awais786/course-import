@@ -36,6 +36,7 @@ class GithubTemplatesPipeline(PipelineStep):
         Fetches and processes raw file data directly from raw GitHub URL.
         """
         try:
+
             source_url = kwargs.get('source_config')
             headers = kwargs.get('headers', {})
             if not source_url:
@@ -48,7 +49,7 @@ class GithubTemplatesPipeline(PipelineStep):
                         data = response.json()  # Attempt to parse JSON
                         if data:  # Check if the JSON is not empty
                             active_courses = [course for course in data if course['metadata'].get('active') is True]
-                            return active_courses
+                            return []
                         else:
                             return []
                     except ValueError as e:
