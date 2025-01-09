@@ -43,6 +43,7 @@ class CourseImportExportViewMixin(DeveloperErrorViewMixin):
 
 class CourseImportView(CourseImportExportViewMixin, GenericAPIView):
     exclude_from_schema = True
+
     @course_author_access_required
     def post(self, request, course_key):
 

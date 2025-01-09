@@ -1,14 +1,21 @@
 """
 URLs for course_import.
 """
-from django.urls import re_path  # pylint: disable=unused-import
+from django.urls import re_path, path, include  # pylint: disable=unused-import
 from django.views.generic import TemplateView  # pylint: disable=unused-import
 
 from course_import import views
+from django.conf import settings
 
-app_name = 'course_import'
+app_url_patterns = (
+    [
+        re_path(r'import/$',  # Correct URL pattern
+            views.CourseImportView.as_view(),
+                name='course_templates_import'),  # URL name for reverse lookup
+    ]
+    , "course_import",
+)
 
 urlpatterns = [
-    re_path(fr'^v0/import/{settings.COURSE_ID_PATTERN}/$',
-            views.CourseImportView.as_view(), name='course_import'),
+    path("", include(app_url_patterns)),
 ]
