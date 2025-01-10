@@ -11,9 +11,9 @@ app_name = 'course_import'  # Define the namespace here
 
 app_url_patterns = (
     [
-        re_path(r'import/$',  # Correct URL pattern
-            views.CourseTemplatesImportView.as_view(),
-                name='course_templates_import'),  # URL name for reverse lookup
+        re_path(fr'^import/{settings.COURSE_ID_PATTERN}/$', views.CourseImportView.as_view(),
+                name='course_templates_import'),
+
     ]
     , "course_import",
 )
