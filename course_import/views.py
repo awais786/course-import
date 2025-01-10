@@ -8,19 +8,23 @@ import os
 from urllib.parse import urlparse
 
 import requests
-from cms.djangoapps.contentstore.storage import course_import_export_storage
-from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx
-from cms.djangoapps.contentstore.utils import IMPORTABLE_FILE_TYPES
+
+try:
+    from cms.djangoapps.contentstore.storage import course_import_export_storage
+    from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx
+    from cms.djangoapps.contentstore.utils import IMPORTABLE_FILE_TYPES
+    from openedx.core.lib.api.view_utils import DeveloperErrorViewMixin, view_auth_classes
+except ImportError:
+    pass
+
 from django.conf import settings
 from django.core.files import File
-from openedx.core.lib.api.view_utils import DeveloperErrorViewMixin, view_auth_classes
 from path import Path as path
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from user_tasks.models import UserTaskStatus
-
 
 log = logging.getLogger(__name__)
 

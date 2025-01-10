@@ -9,6 +9,8 @@ from django.conf import settings
 
 app_name = 'course_import'  # Define the namespace here
 
+
+# endpoint will be accessible like this /course_import_api/import/course-v1:edX+DemoX+Demo_Course/
 app_url_patterns = (
     [
         re_path(fr'^import/{settings.COURSE_ID_PATTERN}/$', views.CourseImportView.as_view(),

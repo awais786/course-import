@@ -5,3 +5,7 @@ Django             # Web application framework
 
 
 openedx-atlas
+git+https://github.com/awais786/openedx-filters.git@course-templates-filters
+edx_django_utils
+djangorestframework
+requests
