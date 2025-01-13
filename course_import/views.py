@@ -9,13 +9,12 @@ from urllib.parse import urlparse
 
 import requests
 
-try:
-    from cms.djangoapps.contentstore.storage import course_import_export_storage
-    from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx
-    from cms.djangoapps.contentstore.utils import IMPORTABLE_FILE_TYPES
-    from openedx.core.lib.api.view_utils import DeveloperErrorViewMixin, view_auth_classes
-except ImportError:
-    pass
+
+from cms.djangoapps.contentstore.storage import course_import_export_storage
+from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx
+from cms.djangoapps.contentstore.utils import IMPORTABLE_FILE_TYPES
+from openedx.core.lib.api.view_utils import DeveloperErrorViewMixin, view_auth_classes
+
 
 from django.conf import settings
 from django.core.files import File
