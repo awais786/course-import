@@ -39,6 +39,8 @@ openedx-atlas==0.6.2
     # via -r requirements/base.in
 openedx-filters @ git+https://github.com/awais786/openedx-filters.git@course-templates-filters
     # via -r requirements/base.in
+path==17.1.0
+    # via -r requirements/base.in
 pbr==6.1.0
     # via stevedore
 psutil==6.1.1

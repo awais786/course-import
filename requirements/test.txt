@@ -71,6 +71,8 @@ openedx-filters @ git+https://github.com/awais786/openedx-filters.git@course-tem
     # via -r requirements/base.txt
 packaging==24.2
     # via pytest
+path==17.1.0
+    # via -r requirements/base.txt
 pbr==6.1.0
     # via
     #   -r requirements/base.txt

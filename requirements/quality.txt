@@ -102,6 +102,8 @@ packaging==24.2
     # via
     #   -r requirements/test.txt
     #   pytest
+path==17.1.0
+    # via -r requirements/test.txt
 pbr==6.1.0
     # via
     #   -r requirements/test.txt
