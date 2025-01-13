@@ -27,6 +27,18 @@ DATABASES = {
 
 
 INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.messages',
+    'django.contrib.sessions',
+    'django.contrib.admin',
     "openedx_filters",
     "course_import",
+    'user_tasks.apps.UserTasksConfig',
 )
+
+ROOT_URLCONF = 'course_import.urls'
+COURSE_KEY_PATTERN = r'(?P<course_key_string>[^/+]+(/|\+)[^/+]+(/|\+)[^/?]+)'
+COURSE_ID_PATTERN = COURSE_KEY_PATTERN.replace('course_key_string', 'course_id')
+
+SECRET_KEY = 'aa'

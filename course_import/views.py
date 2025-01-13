@@ -9,13 +9,8 @@ from urllib.parse import urlparse
 
 import requests
 
-try:
-    from cms.djangoapps.contentstore.storage import course_import_export_storage
-    from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx
-    from cms.djangoapps.contentstore.utils import IMPORTABLE_FILE_TYPES
-    from openedx.core.lib.api.view_utils import DeveloperErrorViewMixin, view_auth_classes
-except ImportError:
-    pass
+from cms.djangoapps.contentstore.storage import course_import_export_storage
+from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx
 
 from django.conf import settings
 from django.core.files import File
@@ -25,26 +20,14 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from user_tasks.models import UserTaskStatus
+from django.http import HttpResponseBadRequest
 
 log = logging.getLogger(__name__)
 
-
-@view_auth_classes()
-class CourseImportExportViewMixin(DeveloperErrorViewMixin):
-    """
-    Mixin class for course import/export related views.
-    """
-
-    def perform_authentication(self, request):
-        """
-        Ensures that the user is authenticated (e.g. not an AnonymousUser)
-        """
-        super().perform_authentication(request)
-        if request.user.is_anonymous:
-            raise AuthenticationFailed
+IMPORTABLE_FILE_TYPES = ('.tar.gz', '.zip')
 
 
-class CourseImportView(CourseImportExportViewMixin, GenericAPIView):
+class CourseImportView(GenericAPIView):
     exclude_from_schema = True
 
     def post(self, request, course_id):
@@ -102,13 +85,8 @@ class CourseImportView(CourseImportExportViewMixin, GenericAPIView):
             return Response({
                 'task_id': async_result.task_id
             })
-        except Exception as e:
-            log.exception(f'Course import {course_key}: Unknown error in import')
-            raise self.api_error(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                developer_message=str(e),
-                error_code='internal_error'
-            )
+        except Exception as err:
+            return HttpResponseBadRequest(repr(err))
 
     def get(self, request, course_key):
         """
@@ -123,10 +101,5 @@ class CourseImportView(CourseImportExportViewMixin, GenericAPIView):
             return Response({
                 'state': task_status.state
             })
-        except Exception as e:
-            log.exception(str(e))
-            raise self.api_error(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                developer_message=str(e),
-                error_code='internal_error'
-            )
+        except Exception as err:
+            return HttpResponseBadRequest(repr(err))
