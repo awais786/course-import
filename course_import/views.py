@@ -46,18 +46,15 @@ class CourseImportView(GenericAPIView):
                 repr(course_key).encode('utf-8')
             ).decode('utf-8')
 
-            if not course_dir.isdir():
-                os.makedirs(course_dir)
+            # if not course_dir.isdir():
+            # os.makedirs(course_dir)
 
             if 'file_url' in request.data:
                 file_url = request.data['file_url']
                 filename = os.path.basename(urlparse(file_url).path)
                 if not filename.endswith(IMPORTABLE_FILE_TYPES):
-                    raise self.api_error(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        developer_message=f'File type not supported: {filename}',
-                        error_code='invalid_file_type',
-                    )
+                    raise HttpResponseBadRequest()
+
                 response = requests.get(file_url, stream=True)
                 if response.status_code != 200:
                     raise self.api_error(
@@ -76,15 +73,21 @@ class CourseImportView(GenericAPIView):
                 log.info(f"Course import {course_key}: File downloaded from URL, file: {filename}")
 
             log.info("Course import %s: Upload complete", course_key)
+
             with open(temp_filepath, 'rb') as local_file:
                 django_file = File(local_file)
                 storage_path = course_import_export_storage.save('olx_import/' + filename, django_file)
 
+            breakpoint()
             async_result = import_olx.delay(
                 request.user.id, str(course_key), storage_path, filename, request.LANGUAGE_CODE)
-            return Response({
+
+            resp =  Response({
                 'task_id': async_result.task_id
             })
+
+
+            return resp
         except Exception as err:
             return HttpResponseBadRequest(repr(err))
 
@@ -103,3 +106,8 @@ class CourseImportView(GenericAPIView):
             })
         except Exception as err:
             return HttpResponseBadRequest(repr(err))
+
+
+def makedir(course_dir):
+    if not course_dir.isdir():
+        os.makedirs(course_dir)

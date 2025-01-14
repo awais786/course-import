@@ -1,10 +1,12 @@
-
 """
 These settings are here to use during tests, because django requires them.
 
 In a real-world use case, apps in this project are installed into other
 Django applications, so these settings will not be used.
 """
+
+import os
+from path import Path as path
 
 DATABASES = {
     "default": {
@@ -25,6 +27,7 @@ DATABASES = {
     },
 }
 
+GITHUB_REPO_ROOT = "course_data"
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -37,8 +40,12 @@ INSTALLED_APPS = (
     'user_tasks.apps.UserTasksConfig',
 )
 
+MIDDLEWARE = [
+    'django.middleware.locale.LocaleMiddleware',
+]
+
 ROOT_URLCONF = 'course_import.urls'
 COURSE_KEY_PATTERN = r'(?P<course_key_string>[^/+]+(/|\+)[^/+]+(/|\+)[^/?]+)'
 COURSE_ID_PATTERN = COURSE_KEY_PATTERN.replace('course_key_string', 'course_id')
 
-SECRET_KEY = 'aa'
+SECRET_KEY = 'insecure-secret-key'
