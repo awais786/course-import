@@ -46,8 +46,8 @@ class CourseImportView(GenericAPIView):
                 repr(course_key).encode('utf-8')
             ).decode('utf-8')
 
-            # if not course_dir.isdir():
-            # os.makedirs(course_dir)
+            if not course_dir.isdir():
+                os.makedirs(course_dir)
 
             if 'file_url' in request.data:
                 file_url = request.data['file_url']
@@ -78,7 +78,6 @@ class CourseImportView(GenericAPIView):
                 django_file = File(local_file)
                 storage_path = course_import_export_storage.save('olx_import/' + filename, django_file)
 
-            breakpoint()
             async_result = import_olx.delay(
                 request.user.id, str(course_key), storage_path, filename, request.LANGUAGE_CODE)
 
@@ -91,10 +90,11 @@ class CourseImportView(GenericAPIView):
         except Exception as err:
             return HttpResponseBadRequest(repr(err))
 
-    def get(self, request, course_key):
+    def get(self, request, course_id):
         """
         Check the status of the specified task
         """
+        course_key = course_id
         try:
             task_id = request.GET['task_id']
             filename = request.GET['filename']
