@@ -6,11 +6,8 @@ with the `CourseTemplateRequested` filter.
 import json
 from unittest.mock import MagicMock, Mock, patch
 
-from ddt import data, ddt
 from django.test import TestCase, override_settings
 from openedx_filters.course_authoring.filters import CourseTemplateRequested
-
-from course_import.pipeline import GithubTemplatesPipeline
 
 
 @override_settings(
@@ -29,8 +26,7 @@ class TestPipelineStepDefinition(TestCase):
     These tests cover scenarios for fetching course templates from GitHub.
     """
 
-    @patch('course_import.pipeline.requests.get')
-    def test_github_template_no_url(self, mock_get):
+    def test_github_template_no_url(self):
         """
         Test that an error is returned if no source URL is provided.
         """

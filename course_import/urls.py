@@ -1,11 +1,11 @@
 """
 URLs for course_import.
 """
-from django.urls import re_path, path, include  # pylint: disable=unused-import
+from django.conf import settings
+from django.urls import include, path, re_path  # pylint: disable=unused-import
 from django.views.generic import TemplateView  # pylint: disable=unused-import
 
 from course_import import views
-from django.conf import settings
 
 app_name = 'course_import'  # Define the namespace here
 
