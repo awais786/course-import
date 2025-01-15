@@ -6,12 +6,12 @@ import tarfile
 import tempfile
 from unittest.mock import MagicMock, patch
 
+from django.conf import settings
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.urls import reverse
 from path import Path as path
 from rest_framework import status
-from rest_framework.test import APITestCase
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APITestCase
 
 
 class PluginCourseImportViewTest(APITestCase):
@@ -34,6 +34,10 @@ class PluginCourseImportViewTest(APITestCase):
         cls.staff_user = User.objects.create_user(
             username="staff", password=cls.password, is_staff=True, is_superuser=True
         )
+
+        course_dir = path(settings.GITHUB_REPO_ROOT)
+        if not course_dir.exists():
+            os.makedirs(course_dir)
 
         cls.content_dir = path(tempfile.mkdtemp())
         good_dir = tempfile.mkdtemp(dir=cls.content_dir)
