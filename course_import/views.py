@@ -8,19 +8,17 @@ import os
 from urllib.parse import urlparse
 
 import requests
-
 from cms.djangoapps.contentstore.storage import course_import_export_storage
 from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx
-
 from django.conf import settings
 from django.core.files import File
+from django.http import HttpResponseBadRequest
 from path import Path as path
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from user_tasks.models import UserTaskStatus
-from django.http import HttpResponseBadRequest
 
 log = logging.getLogger(__name__)
 
@@ -42,6 +40,7 @@ class CourseImportView(GenericAPIView):
                 repr(course_key).encode('utf-8')
             ).decode('utf-8')
 
+            # moving this into method. They were causing issues in mocking in tests.
             makedir(course_dir)
 
             if 'file_url' in request.data:
@@ -53,11 +52,8 @@ class CourseImportView(GenericAPIView):
 
                 response = requests.get(file_url, stream=True)
                 if response.status_code != 200:
-                    raise self.api_error(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        developer_message='Failed to download file from URL',
-                        error_code='download_error',
-                    )
+                    return HttpResponseBadRequest("failed to download a file.")
+
                 temp_filepath = course_dir / filename
                 total_size = 0  # Track total size in bytes
                 with open(temp_filepath, "wb") as temp_file:
