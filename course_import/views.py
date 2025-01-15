@@ -36,11 +36,7 @@ class CourseImportView(GenericAPIView):
             course_key = course_id
             # Check for input source
             if 'file_url' not in request.data:
-                raise self.api_error(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    developer_message='Missing required parameter',
-                    error_code='internal_error',
-                )
+                return HttpResponseBadRequest("file_url missing.")
 
             course_dir = path(settings.GITHUB_REPO_ROOT) / base64.urlsafe_b64encode(
                 repr(course_key).encode('utf-8')
@@ -51,8 +47,9 @@ class CourseImportView(GenericAPIView):
             if 'file_url' in request.data:
                 file_url = request.data['file_url']
                 filename = os.path.basename(urlparse(file_url).path)
+
                 if not filename.endswith(IMPORTABLE_FILE_TYPES):
-                    raise HttpResponseBadRequest()
+                    return HttpResponseBadRequest("Invalid file type.")
 
                 response = requests.get(file_url, stream=True)
                 if response.status_code != 200:

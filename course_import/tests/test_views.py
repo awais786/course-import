@@ -99,11 +99,6 @@ class PluginCourseImportViewTest(APITestCase):
 
             with patch('course_import.views.CourseImportTask.generate_name') as mock_generate_name, \
                 patch('user_tasks.models.UserTaskStatus.objects.filter') as mock_filter:
-                """
-                Test checking the status of the import task.
-
-                This section mocks the task name generation and task status retrieval.
-                """
                 # Mock task name generation
                 mock_generate_name.return_value = "mocked_task_name"
 
@@ -136,3 +131,32 @@ class PluginCourseImportViewTest(APITestCase):
             'course_import:course_templates_import',
             kwargs={'course_id': course_id}
         )
+
+    def test_import_course_by_url_without_file(self):
+        """
+        This test without file_url it raises an error.
+        """
+        # Log in as staff user
+        self.client.login(username=self.staff_user.username, password=self.password)
+        import_response = self.client.post(self.get_url(self.course_id),format='json')
+        self.assertEqual(import_response.status_code, 400)
+        self.assertEqual(import_response.content.decode('utf-8'), 'file_url missing.')
+
+    @patch('course_import.views.makedir')
+    def test_import_course_by_url_invalid_file(self, mock_isdir):
+        """
+        This test without file_url it raises an error.
+        """
+        # Log in as staff user
+        mock_isdir.return_value = True
+        self.client.login(username=self.staff_user.username, password=self.password)
+        # Mocked file URL and content
+        file_url = "https://example.com/test-course.tar.exe"
+
+        import_response = self.client.post(
+            self.get_url(self.course_id),
+            {'file_url': file_url},
+            format='json'
+        )
+        self.assertEqual(import_response.status_code, 400)
+        self.assertEqual(import_response.content.decode('utf-8'), 'Invalid file type.')
