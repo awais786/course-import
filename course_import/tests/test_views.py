@@ -165,7 +165,6 @@ class PluginCourseImportViewTest(APITestCase):
             )
 
             self.assertEqual(response.status_code, 400)
-            breakpoint()
             self.assertEqual(response.content.decode('utf-8'), 'Unexpected error occurred.')
 
     @patch('course_import.views.CourseImportTask.generate_name')
