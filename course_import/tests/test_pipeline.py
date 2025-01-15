@@ -127,9 +127,8 @@ class TestPipelineStepDefinition(TestCase):
             **{'source_config': "https://404.json"}
         )
 
-        # pylint disable=invalid-sequence-index
         self.assertEqual(
-            result['source_config']['error'],
+            result.get('source_config', {}).get('error'),
             "Error fetching: Failed to fetch from URL. Status code: 404"
         )
 

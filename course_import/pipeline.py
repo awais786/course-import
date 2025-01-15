@@ -41,7 +41,7 @@ class GithubTemplatesPipeline(PipelineStep):
             if not source_url:
                 return {"error": "Source URL not provided", "status": 400}
 
-            response = requests.get(source_url, headers=headers)
+            response = requests.get(source_url, headers=headers)    # pylint: disable=missing-timeout
             if response.status_code == 200:
                 if response.content.strip():  # Ensure the response content is not empty
                     try:
@@ -52,7 +52,7 @@ class GithubTemplatesPipeline(PipelineStep):
                         else:
                             return []
                     except ValueError as e:
-                        raise ValueError(f"Failed to parse JSON: {e}")
+                        raise ValueError(f"Failed to parse JSON: {e}") from e
                 else:
                     return []
             else:

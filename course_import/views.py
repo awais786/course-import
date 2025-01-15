@@ -58,7 +58,7 @@ class CourseImportView(GenericAPIView):
                 if not filename.endswith(IMPORTABLE_FILE_TYPES):
                     return HttpResponseBadRequest("Invalid file type.")
 
-                response = requests.get(file_url, stream=True)
+                response = requests.get(file_url, stream=True)  # pylint: disable=missing-timeout
                 if response.status_code != 200:
                     return HttpResponseBadRequest("failed to download a file.")
 
