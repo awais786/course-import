@@ -54,13 +54,15 @@ class PluginCourseImportViewTest(APITestCase):
         with tarfile.open(cls.good_tar_fullpath, "w:gz") as gtar:
             gtar.add(good_dir)
 
-    def test_staff_with_access_import_course_by_url_succeeds(self):
+    @patch('course_import.views.makedir')
+    def test_staff_with_access_import_course_by_url_succeeds(self, mock_isdir):
         """
         Test that a staff user can successfully import a course using a file URL.
 
         This test mocks external requests to download the file and the asynchronous
         task for course import.
         """
+        mock_isdir.return_value = True
         # Log in as staff user
         self.client.login(username=self.staff_user.username, password=self.password)
 

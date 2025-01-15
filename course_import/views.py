@@ -46,8 +46,7 @@ class CourseImportView(GenericAPIView):
                 repr(course_key).encode('utf-8')
             ).decode('utf-8')
 
-            if not course_dir.isdir():
-                os.makedirs(course_dir)
+            makedir(course_dir)
 
             if 'file_url' in request.data:
                 file_url = request.data['file_url']
@@ -81,10 +80,10 @@ class CourseImportView(GenericAPIView):
             async_result = import_olx.delay(
                 request.user.id, str(course_key), storage_path, filename, request.LANGUAGE_CODE)
 
-            resp =  Response({
-                'task_id': async_result.task_id
+            resp = Response({
+                'task_id': async_result.task_id,
+                'filename': filename
             })
-
 
             return resp
         except Exception as err:
@@ -109,5 +108,12 @@ class CourseImportView(GenericAPIView):
 
 
 def makedir(course_dir):
+    """
+    Create the specified directory if it does not already exist.
+    Args:
+        course_dir (path.Path or str): The path of the directory to create.
+    """
+
     if not course_dir.isdir():
         os.makedirs(course_dir)
+
