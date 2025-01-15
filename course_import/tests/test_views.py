@@ -156,7 +156,7 @@ class PluginCourseImportViewTest(APITestCase):
         file_url = "https://example.com/test-course.tar.gz"
         with patch('requests.get') as mock_get:
             # Raise a generic exception to simulate an unexpected error
-            mock_get.side_effect = Exception("Unexpected error occurred")
+            mock_get.side_effect = Exception("Unexpected error occurred.")
 
             response = self.client.post(
                 self.get_url(self.course_id),
