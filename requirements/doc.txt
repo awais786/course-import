@@ -8,6 +8,10 @@ accessible-pygments==0.0.5
     # via pydata-sphinx-theme
 alabaster==1.0.0
     # via sphinx
+amqp==5.3.1
+    # via
+    #   -r requirements/test.txt
+    #   kombu
 asgiref==3.8.1
     # via
     #   -r requirements/test.txt
@@ -20,8 +24,16 @@ backports-tarfile==1.2.0
     # via jaraco-context
 beautifulsoup4==4.12.3
     # via pydata-sphinx-theme
+billiard==4.2.1
+    # via
+    #   -r requirements/test.txt
+    #   celery
 build==1.2.2.post1
     # via -r requirements/doc.in
+celery==5.4.0
+    # via
+    #   -r requirements/test.txt
+    #   django-user-tasks
 certifi==2024.12.14
     # via
     #   -r requirements/test.txt
@@ -37,8 +49,24 @@ charset-normalizer==3.4.1
 click==8.1.8
     # via
     #   -r requirements/test.txt
+    #   celery
+    #   click-didyoumean
+    #   click-plugins
+    #   click-repl
     #   code-annotations
     #   edx-django-utils
+click-didyoumean==0.3.1
+    # via
+    #   -r requirements/test.txt
+    #   celery
+click-plugins==1.1.1
+    # via
+    #   -r requirements/test.txt
+    #   celery
+click-repl==0.3.0
+    # via
+    #   -r requirements/test.txt
+    #   celery
 code-annotations==2.1.0
     # via -r requirements/test.txt
 coverage[toml]==7.6.10
@@ -47,25 +75,37 @@ coverage[toml]==7.6.10
     #   pytest-cov
 ddt==1.7.2
     # via -r requirements/test.txt
-django==4.2.17
+django==4.2.18
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/test.txt
     #   django-crum
+    #   django-model-utils
+    #   django-user-tasks
     #   django-waffle
     #   djangorestframework
+    #   drf-yasg
     #   edx-django-utils
     #   openedx-filters
 django-crum==0.7.9
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
+django-model-utils==5.0.0
+    # via
+    #   -r requirements/test.txt
+    #   django-user-tasks
+django-user-tasks==3.2.0
+    # via -r requirements/test.txt
 django-waffle==4.2.0
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
 djangorestframework==3.15.2
-    # via -r requirements/test.txt
+    # via
+    #   -r requirements/test.txt
+    #   django-user-tasks
+    #   drf-yasg
 doc8==1.1.2
     # via -r requirements/doc.in
 docutils==0.21.2
@@ -75,6 +115,10 @@ docutils==0.21.2
     #   readme-renderer
     #   restructuredtext-lint
     #   sphinx
+drf-yasg==1.21.8
+    # via
+    #   -r requirements/test.txt
+    #   django-user-tasks
 edx-django-utils==7.1.0
     # via -r requirements/test.txt
 idna==3.10
@@ -85,6 +129,10 @@ imagesize==1.4.1
     # via sphinx
 importlib-metadata==8.5.0
     # via keyring
+inflection==0.5.1
+    # via
+    #   -r requirements/test.txt
+    #   drf-yasg
 iniconfig==2.0.0
     # via
     #   -r requirements/test.txt
@@ -102,6 +150,10 @@ jinja2==3.1.5
     #   sphinx
 keyring==25.6.0
     # via twine
+kombu==5.4.2
+    # via
+    #   -r requirements/test.txt
+    #   celery
 markdown-it-py==3.0.0
     # via rich
 markupsafe==3.0.2
@@ -110,7 +162,7 @@ markupsafe==3.0.2
     #   jinja2
 mdurl==0.1.2
     # via markdown-it-py
-more-itertools==10.5.0
+more-itertools==10.6.0
     # via
     #   jaraco-classes
     #   jaraco-functools
@@ -128,6 +180,7 @@ packaging==24.2
     # via
     #   -r requirements/test.txt
     #   build
+    #   drf-yasg
     #   pytest
     #   sphinx
     #   twine
@@ -143,6 +196,10 @@ pluggy==1.5.0
     # via
     #   -r requirements/test.txt
     #   pytest
+prompt-toolkit==3.0.48
+    # via
+    #   -r requirements/test.txt
+    #   click-repl
 psutil==6.1.1
     # via
     #   -r requirements/test.txt
@@ -176,14 +233,23 @@ pytest-cov==6.0.0
     # via -r requirements/test.txt
 pytest-django==4.9.0
     # via -r requirements/test.txt
+python-dateutil==2.9.0.post0
+    # via
+    #   -r requirements/test.txt
+    #   celery
 python-slugify==8.0.4
     # via
     #   -r requirements/test.txt
     #   code-annotations
+pytz==2024.2
+    # via
+    #   -r requirements/test.txt
+    #   drf-yasg
 pyyaml==6.0.2
     # via
     #   -r requirements/test.txt
     #   code-annotations
+    #   drf-yasg
 readme-renderer==44.0
     # via twine
 requests==2.32.3
@@ -200,6 +266,10 @@ rfc3986==2.0.0
     # via twine
 rich==13.9.4
     # via twine
+six==1.17.0
+    # via
+    #   -r requirements/test.txt
+    #   python-dateutil
 snowballstemmer==2.2.0
     # via sphinx
 soupsieve==2.6
@@ -241,11 +311,30 @@ twine==6.0.1
     # via -r requirements/doc.in
 typing-extensions==4.12.2
     # via pydata-sphinx-theme
+tzdata==2024.2
+    # via
+    #   -r requirements/test.txt
+    #   celery
+    #   kombu
+uritemplate==4.1.1
+    # via
+    #   -r requirements/test.txt
+    #   drf-yasg
 urllib3==2.2.3
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/test.txt
     #   requests
     #   twine
+vine==5.1.0
+    # via
+    #   -r requirements/test.txt
+    #   amqp
+    #   celery
+    #   kombu
+wcwidth==0.2.13
+    # via
+    #   -r requirements/test.txt
+    #   prompt-toolkit
 zipp==3.21.0
     # via importlib-metadata

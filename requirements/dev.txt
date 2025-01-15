@@ -4,6 +4,10 @@
 #
 #    make upgrade
 #
+amqp==5.3.1
+    # via
+    #   -r requirements/quality.txt
+    #   kombu
 asgiref==3.8.1
     # via
     #   -r requirements/quality.txt
@@ -13,6 +17,10 @@ astroid==3.3.8
     #   -r requirements/quality.txt
     #   pylint
     #   pylint-celery
+billiard==4.2.1
+    # via
+    #   -r requirements/quality.txt
+    #   celery
 build==1.2.2.post1
     # via
     #   -r requirements/pip-tools.txt
@@ -21,6 +29,10 @@ cachetools==5.5.0
     # via
     #   -r requirements/ci.txt
     #   tox
+celery==5.4.0
+    # via
+    #   -r requirements/quality.txt
+    #   django-user-tasks
 certifi==2024.12.14
     # via
     #   -r requirements/quality.txt
@@ -42,15 +54,31 @@ click==8.1.8
     # via
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
+    #   celery
+    #   click-didyoumean
     #   click-log
+    #   click-plugins
+    #   click-repl
     #   code-annotations
     #   edx-django-utils
     #   edx-lint
     #   pip-tools
+click-didyoumean==0.3.1
+    # via
+    #   -r requirements/quality.txt
+    #   celery
 click-log==0.4.0
     # via
     #   -r requirements/quality.txt
     #   edx-lint
+click-plugins==1.1.1
+    # via
+    #   -r requirements/quality.txt
+    #   celery
+click-repl==0.3.0
+    # via
+    #   -r requirements/quality.txt
+    #   celery
 code-annotations==2.1.0
     # via
     #   -r requirements/quality.txt
@@ -75,13 +103,16 @@ distlib==0.3.9
     # via
     #   -r requirements/ci.txt
     #   virtualenv
-django==4.2.17
+django==4.2.18
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/quality.txt
     #   django-crum
+    #   django-model-utils
+    #   django-user-tasks
     #   django-waffle
     #   djangorestframework
+    #   drf-yasg
     #   edx-django-utils
     #   edx-i18n-tools
     #   openedx-filters
@@ -89,12 +120,25 @@ django-crum==0.7.9
     # via
     #   -r requirements/quality.txt
     #   edx-django-utils
+django-model-utils==5.0.0
+    # via
+    #   -r requirements/quality.txt
+    #   django-user-tasks
+django-user-tasks==3.2.0
+    # via -r requirements/quality.txt
 django-waffle==4.2.0
     # via
     #   -r requirements/quality.txt
     #   edx-django-utils
 djangorestframework==3.15.2
-    # via -r requirements/quality.txt
+    # via
+    #   -r requirements/quality.txt
+    #   django-user-tasks
+    #   drf-yasg
+drf-yasg==1.21.8
+    # via
+    #   -r requirements/quality.txt
+    #   django-user-tasks
 edx-django-utils==7.1.0
     # via -r requirements/quality.txt
 edx-i18n-tools==1.6.1
@@ -110,6 +154,10 @@ idna==3.10
     # via
     #   -r requirements/quality.txt
     #   requests
+inflection==0.5.1
+    # via
+    #   -r requirements/quality.txt
+    #   drf-yasg
 iniconfig==2.0.0
     # via
     #   -r requirements/quality.txt
@@ -123,6 +171,10 @@ jinja2==3.1.5
     #   -r requirements/quality.txt
     #   code-annotations
     #   diff-cover
+kombu==5.4.2
+    # via
+    #   -r requirements/quality.txt
+    #   celery
 lxml[html-clean,html_clean]==5.3.0
     # via
     #   edx-i18n-tools
@@ -151,6 +203,7 @@ packaging==24.2
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
     #   build
+    #   drf-yasg
     #   pyproject-api
     #   pytest
     #   tox
@@ -180,6 +233,10 @@ pluggy==1.5.0
     #   tox
 polib==1.2.0
     # via edx-i18n-tools
+prompt-toolkit==3.0.48
+    # via
+    #   -r requirements/quality.txt
+    #   click-repl
 psutil==6.1.1
     # via
     #   -r requirements/quality.txt
@@ -236,14 +293,23 @@ pytest-cov==6.0.0
     # via -r requirements/quality.txt
 pytest-django==4.9.0
     # via -r requirements/quality.txt
+python-dateutil==2.9.0.post0
+    # via
+    #   -r requirements/quality.txt
+    #   celery
 python-slugify==8.0.4
     # via
     #   -r requirements/quality.txt
     #   code-annotations
+pytz==2024.2
+    # via
+    #   -r requirements/quality.txt
+    #   drf-yasg
 pyyaml==6.0.2
     # via
     #   -r requirements/quality.txt
     #   code-annotations
+    #   drf-yasg
     #   edx-i18n-tools
 requests==2.32.3
     # via -r requirements/quality.txt
@@ -251,6 +317,7 @@ six==1.17.0
     # via
     #   -r requirements/quality.txt
     #   edx-lint
+    #   python-dateutil
 snowballstemmer==2.2.0
     # via
     #   -r requirements/quality.txt
@@ -274,15 +341,34 @@ tomlkit==0.13.2
     #   pylint
 tox==4.23.2
     # via -r requirements/ci.txt
+tzdata==2024.2
+    # via
+    #   -r requirements/quality.txt
+    #   celery
+    #   kombu
+uritemplate==4.1.1
+    # via
+    #   -r requirements/quality.txt
+    #   drf-yasg
 urllib3==2.2.3
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/quality.txt
     #   requests
+vine==5.1.0
+    # via
+    #   -r requirements/quality.txt
+    #   amqp
+    #   celery
+    #   kombu
 virtualenv==20.28.1
     # via
     #   -r requirements/ci.txt
     #   tox
+wcwidth==0.2.13
+    # via
+    #   -r requirements/quality.txt
+    #   prompt-toolkit
 wheel==0.45.1
     # via
     #   -r requirements/pip-tools.txt
