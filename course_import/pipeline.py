@@ -3,7 +3,6 @@ Pipeline steps for course templates. These will be move to some where else.
 """
 
 import requests
-from django.http import JsonResponse
 from openedx_filters.filters import PipelineStep
 
 
@@ -59,5 +58,5 @@ class GithubTemplatesPipeline(PipelineStep):
             else:
                 raise Exception(f"Failed to fetch from URL. Status code: {response.status_code}")
 
-        except Exception as err:
+        except Exception as err:    # pylint: disable=broad-except
             return {"error": f"Error fetching: {err}", "status": 500}

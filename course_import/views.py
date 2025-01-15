@@ -8,8 +8,8 @@ import os
 from urllib.parse import urlparse
 
 import requests
-from cms.djangoapps.contentstore.storage import course_import_export_storage
-from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx
+from cms.djangoapps.contentstore.storage import course_import_export_storage    # pylint: disable=import-error
+from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx      # pylint: disable=import-error
 from django.conf import settings
 from django.core.files import File
 from django.http import HttpResponseBadRequest, HttpResponse
@@ -26,10 +26,17 @@ IMPORTABLE_FILE_TYPES = ('.tar.gz', '.zip')
 
 
 class CourseImportView(GenericAPIView):
-    exclude_from_schema = True
+    """
+    This view handles course import operations.
+
+    It provides an endpoint to import a course by URL.
+    The request should include either a `file_url`.
+    """
 
     def post(self, request, course_id):
-
+        """
+        Handles the POST request for importing a course.
+        """
         try:
             course_key = course_id
             # Check for input source
