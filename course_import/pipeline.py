@@ -10,8 +10,8 @@ class GithubTemplatesPipeline(PipelineStep):
     """
     A single-step pipeline to fetch templates from various sources such as GitHub or S3.
     """
-    @classmethod
-    def run_filter(cls, source_type, **kwargs):
+
+    def run_filter(self, source_type, **kwargs):     # pylint: disable=arguments-differ
         """
         Fetch templates from a specified source.
         Arguments:
@@ -25,12 +25,11 @@ class GithubTemplatesPipeline(PipelineStep):
             TemplateFetchException: If fetching templates fails.
         """
         if source_type == "github":
-            return {"source_config": cls.fetch_from_github(**kwargs)}
+            return {"source_config": self.fetch_from_github(**kwargs)}
         else:
             return {}
 
-    @classmethod
-    def fetch_from_github(cls, **kwargs):
+    def fetch_from_github(self, **kwargs):
         """
         Fetches and processes raw file data directly from raw GitHub URL.
         """
