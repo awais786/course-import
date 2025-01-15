@@ -12,7 +12,7 @@ from cms.djangoapps.contentstore.storage import course_import_export_storage
 from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx
 from django.conf import settings
 from django.core.files import File
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponse
 from path import Path as path
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
@@ -80,7 +80,7 @@ class CourseImportView(GenericAPIView):
 
             return resp
         except Exception as err:
-            return HttpResponseBadRequest(repr(err))
+            return HttpResponse(str(err), status=400)
 
     def get(self, request, course_id):
         """
@@ -97,7 +97,7 @@ class CourseImportView(GenericAPIView):
                 'state': task_status.state
             })
         except Exception as err:
-            return HttpResponseBadRequest(repr(err))
+            return HttpResponse(str(err), status=400)
 
 
 def makedir(course_dir):
