@@ -167,3 +167,67 @@ class PluginCourseImportViewTest(APITestCase):
             self.assertEqual(response.status_code, 400)
             breakpoint()
             self.assertEqual(response.content.decode('utf-8'), 'Unexpected error occurred.')
+
+    @patch('course_import.views.CourseImportTask.generate_name')
+    @patch('user_tasks.models.UserTaskStatus.objects.filter')
+    def test_get_course_import_status_success(self, mock_filter, mock_generate_name):
+        """
+        Test that the status of a course import task is returned successfully.
+        """
+        # Set up mock behavior for generate_name
+        mock_generate_name.return_value = 'mocked_task_name'
+
+        # Set up mock for task status
+        mock_task_status = MagicMock()
+        mock_task_status.state = 'SUCCEEDED'
+        mock_filter.return_value.first.return_value = mock_task_status
+
+        # Simulate a GET request to check task status
+        response = self.client.get(
+            self.get_url(self.course_id),
+            {'task_id': 'mocked-task-id', 'filename': 'mocked-filename'}
+        )
+
+        # Assert the response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['state'], 'SUCCEEDED')
+
+    @patch('course_import.views.CourseImportTask.generate_name')
+    @patch('user_tasks.models.UserTaskStatus.objects.filter')
+    def test_get_course_import_status_error(self, mock_filter, mock_generate_name):
+        """
+        Test that an error is returned if the task is not found.
+        """
+        # Set up mock behavior for generate_name
+        mock_generate_name.return_value = 'mocked_task_name'
+
+        # Simulate the scenario where the task does not exist
+        mock_filter.return_value.first.return_value = None
+
+        # Simulate a GET request to check task status
+        response = self.client.get(
+            self.get_url(self.course_id),
+            {'task_id': 'mocked-task-id', 'filename': 'mocked-filename'}
+        )
+
+        # Assert the response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode('utf-8'), 'Task not found.')
+
+    @patch('course_import.views.CourseImportTask.generate_name')
+    def test_get_course_import_status_invalid_params(self, mock_generate_name):
+        """
+        Test that a 400 error is raised if required parameters are missing.
+        """
+        # Set up mock behavior for generate_name
+        mock_generate_name.return_value = 'mocked_task_name'
+
+        # Simulate a GET request with missing parameters
+        response = self.client.get(
+            self.get_url(self.course_id),
+            {'task_id': 'mocked-task-id'}  # Missing filename
+        )
+
+        # Assert the response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode('utf-8'), 'Missing required parameters.')

@@ -88,11 +88,18 @@ class CourseImportView(GenericAPIView):
         """
         course_key = course_id
         try:
-            task_id = request.GET['task_id']
-            filename = request.GET['filename']
+            task_id = request.GET.get('task_id')
+            filename = request.GET.get('filename')
+
+            if not task_id or not filename:
+                return HttpResponse('Missing required parameters.', status=400)
+
             args = {'course_key_string': str(course_key), 'archive_name': filename}
             name = CourseImportTask.generate_name(args)
             task_status = UserTaskStatus.objects.filter(name=name, task_id=task_id).first()
+            if not task_status:
+                return HttpResponse('Task not found.', status=400)
+
             return Response({
                 'state': task_status.state
             })
@@ -109,4 +116,3 @@ def makedir(course_dir):
 
     if not course_dir.isdir():
         os.makedirs(course_dir)
-
