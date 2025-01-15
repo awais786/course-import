@@ -6,11 +6,12 @@ import tarfile
 import tempfile
 from unittest.mock import MagicMock, patch
 
-from django.contrib.auth.models import User # pylint: disable=imported-auth-user
+from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.urls import reverse
 from path import Path as path
 from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework.test import APIClient
 
 
 class PluginCourseImportViewTest(APITestCase):
@@ -18,13 +19,16 @@ class PluginCourseImportViewTest(APITestCase):
     Test suite for the plugin-based course import API. Only admin can acess this endpoint.
     """
 
+    def setUp(self):
+        super().setUp()
+        self.client = APIClient()
+
     @classmethod
     def setUpClass(cls):
         """
         Set up test data and mock files for course import testing.
         """
         super().setUpClass()
-
         cls.course_id = "course-v1:edX+DemoX+Demo_Course"
         cls.password = "test_password"
         cls.staff_user = User.objects.create_user(
@@ -55,6 +59,25 @@ class PluginCourseImportViewTest(APITestCase):
             'course_import:course_templates_import',
             kwargs={'course_id': course_id}
         )
+
+    def test_import_course_by_url_missing_file_url_invalid_user(self):
+        """
+        Test that a 401 error if user is not logged in.
+        """
+        # self.client.login(username=self.staff_user.username, password=self.password)
+        response = self.client.post(self.get_url(self.course_id), format='json')
+        self.assertEqual(response.status_code, 401)
+
+    def test_import_course_by_url_missing_file_url_without_permission(self):
+        """
+        Test that a 403 error if user is not staff.
+        """
+        user = User.objects.create_user(
+            username="user", password="pass"
+        )
+        self.client.login(username=user, password="pass")
+        response = self.client.post(self.get_url(self.course_id), format='json')
+        self.assertEqual(response.status_code, 403)
 
     @patch('course_import.views.makedir')
     def test_import_course_by_url_success(self, mock_isdir):
@@ -183,6 +206,7 @@ class PluginCourseImportViewTest(APITestCase):
         mock_task_status.state = 'SUCCEEDED'
         mock_filter.return_value.first.return_value = mock_task_status
 
+        self.client.login(username=self.staff_user.username, password=self.password)
         # Simulate a GET request to check task status
         response = self.client.get(
             self.get_url(self.course_id),
@@ -205,6 +229,7 @@ class PluginCourseImportViewTest(APITestCase):
         # Simulate the scenario where the task does not exist
         mock_filter.return_value.first.return_value = None
 
+        self.client.login(username=self.staff_user.username, password=self.password)
         # Simulate a GET request to check task status
         response = self.client.get(
             self.get_url(self.course_id),
@@ -222,7 +247,7 @@ class PluginCourseImportViewTest(APITestCase):
         """
         # Set up mock behavior for generate_name
         mock_generate_name.return_value = 'mocked_task_name'
-
+        self.client.login(username=self.staff_user.username, password=self.password)
         # Simulate a GET request with missing parameters
         response = self.client.get(
             self.get_url(self.course_id),
