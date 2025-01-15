@@ -8,15 +8,16 @@ import os
 from urllib.parse import urlparse
 
 import requests
-from cms.djangoapps.contentstore.storage import course_import_export_storage    # pylint: disable=import-error
-from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx      # pylint: disable=import-error
+from cms.djangoapps.contentstore.storage import course_import_export_storage  # pylint: disable=import-error
+from cms.djangoapps.contentstore.tasks import CourseImportTask, import_olx  # pylint: disable=import-error
 from django.conf import settings
 from django.core.files import File
-from django.http import HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from path import Path as path
 from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import IsAdminUser, IsAuthenticated  # lint-amnesty, pylint: disable=wrong-import-order
 from rest_framework.response import Response
-from user_tasks.models import UserTaskStatus    # pylint: disable=import-error
+from user_tasks.models import UserTaskStatus
 
 log = logging.getLogger(__name__)
 
@@ -30,6 +31,8 @@ class CourseImportView(GenericAPIView):
     It provides an endpoint to import a course by URL.
     The request should include either a `file_url`.
     """
+
+    permission_classes = (IsAuthenticated, IsAdminUser)
 
     def post(self, request, course_id):
         """

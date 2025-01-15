@@ -15,7 +15,7 @@ from rest_framework.test import APITestCase
 
 class PluginCourseImportViewTest(APITestCase):
     """
-    Test suite for the plugin-based course import API.
+    Test suite for the plugin-based course import API. Only admin can acess this endpoint.
     """
 
     @classmethod
@@ -28,7 +28,7 @@ class PluginCourseImportViewTest(APITestCase):
         cls.course_id = "course-v1:edX+DemoX+Demo_Course"
         cls.password = "test_password"
         cls.staff_user = User.objects.create_user(
-            username="staff", password=cls.password, is_staff=True
+            username="staff", password=cls.password, is_staff=True, is_superuser=True
         )
 
         cls.content_dir = path(tempfile.mkdtemp())

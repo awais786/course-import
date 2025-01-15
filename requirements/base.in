@@ -10,3 +10,5 @@ edx_django_utils
 djangorestframework
 requests
 path
+edx-drf-extensions
+
