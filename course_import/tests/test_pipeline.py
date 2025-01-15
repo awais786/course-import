@@ -2,7 +2,7 @@
 Tests for pipeline and filter.
 """
 import json
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 from django.test import TestCase, override_settings
 from openedx_filters.course_authoring.filters import CourseTemplateRequested
@@ -126,7 +126,9 @@ class TestPipelineStepDefinition(TestCase):
             source_type="github",
             **{'source_config': "https://404.json"}
         )
-        self.assertEqual(result['source_config']['error'], "Error fetching: Failed to fetch from URL. Status code: 404")
+        self.assertEqual(
+            result['source_config']['error'], "Error fetching: Failed to fetch from URL. Status code: 404"
+        )
 
     @patch('course_import.pipeline.requests.get')
     def test_github_template_fetch_inactive_templates(self, mock_get):

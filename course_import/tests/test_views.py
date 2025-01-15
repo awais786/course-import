@@ -6,12 +6,11 @@ import tarfile
 import tempfile
 from unittest.mock import MagicMock, patch
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User # pylint: disable=imported-auth-user
 from django.urls import reverse
 from path import Path as path
 from rest_framework import status
 from rest_framework.test import APITestCase
-from user_tasks.models import UserTaskStatus
 
 
 class PluginCourseImportViewTest(APITestCase):

@@ -2,7 +2,7 @@
 URLs for course_import.
 """
 from django.conf import settings
-from django.urls import include, path, re_path  # pylint: disable=unused-import
+from django.urls import include, path, re_path
 
 from course_import import views
 
