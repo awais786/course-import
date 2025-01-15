@@ -1,3 +1,6 @@
+"""
+Test cases for import course api.
+"""
 import sys
 from unittest.mock import Mock
 

@@ -1,7 +1,5 @@
 """
-Tests for pipelines in the `course_templates` module.
-These tests verify the behavior of the `GithubTemplatesPipeline` and its interaction
-with the `CourseTemplateRequested` filter.
+Tests for pipeline and filter.
 """
 import json
 from unittest.mock import MagicMock, Mock, patch

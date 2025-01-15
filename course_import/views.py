@@ -14,11 +14,9 @@ from django.conf import settings
 from django.core.files import File
 from django.http import HttpResponseBadRequest, HttpResponse
 from path import Path as path
-from rest_framework import status
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from user_tasks.models import UserTaskStatus
+from user_tasks.models import UserTaskStatus    # pylint: disable=import-error
 
 log = logging.getLogger(__name__)
 
@@ -86,12 +84,12 @@ class CourseImportView(GenericAPIView):
             })
 
             return resp
-        except Exception as err:
+        except Exception as err:    # pylint: disable=broad-except
             return HttpResponse(str(err), status=400)
 
     def get(self, request, course_id):
         """
-        Check the status of the specified task
+        Handles the Get request for import course task.
         """
         course_key = course_id
         try:
@@ -110,7 +108,7 @@ class CourseImportView(GenericAPIView):
             return Response({
                 'state': task_status.state
             })
-        except Exception as err:
+        except Exception as err:    # pylint: disable=broad-except
             return HttpResponse(str(err), status=400)
 
 

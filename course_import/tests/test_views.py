@@ -1,3 +1,6 @@
+"""
+Test for views.py.
+"""
 import os
 import tarfile
 import tempfile
