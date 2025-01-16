@@ -1,15 +1,16 @@
 """
-Pipeline steps for course templates. These will be move to some where else.
+A single-step pipeline to fetch templates from various sources such as GitHub
 """
 
 import requests
-
 from openedx_filters import PipelineStep
 
 
 class GithubTemplatesPipeline(PipelineStep):
     """
-    A single-step pipeline to fetch templates from various sources such as GitHub or S3.
+    Currently, this pipeline supports fetching templates from GitHub. It validates the
+    provided source configuration, fetches the data, and applies filtering logic to
+    return only active templates.
     """
 
     def run_filter(self, source_type, **kwargs):  # pylint: disable=arguments-differ
@@ -36,23 +37,22 @@ class GithubTemplatesPipeline(PipelineStep):
         """
         source_config = kwargs.get('source_config')
         headers = kwargs.get('headers', {})
+
         if not source_config:
             return {"error": "Source config not provided", "status": 400}
 
-        response = requests.get(source_config, headers=headers)  # pylint: disable=missing-timeout
+        try:
+            response = requests.get(source_config, headers=headers)  # pylint: disable=missing-timeout
 
-        if response.status_code != 200:
-            return {"error": f"Failed to fetch from URL. Status code: {response.status_code}"}
+            if response.status_code != 200:
+                return {"error": f"Failed to fetch from URL. Status code: {response.status_code}"}
 
-        if response.content.strip():  # Ensure the response content is not empty
-            try:
-                data = response.json()  # Attempt to parse JSON
-                if data:
-                    active_courses = [course for course in data if course['metadata'].get('active') is True]
-                    return active_courses
-                else:
-                    return []
-            except Exception as err:  # pylint: disable=broad-except
-                return {"error": f"Error fetching: {err}", "status": 500}
+            if not response.content.strip():  # Ensure the response content is not empty
+                return []
 
-        return []
+            data = response.json()  # Attempt to parse JSON
+            active_courses = [course for course in data if course['metadata'].get('active') is True]
+            return active_courses
+
+        except Exception as err:  # pylint: disable=broad-except
+            return {"error": f"Error fetching: {err}", "status": 500}
