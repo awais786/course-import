@@ -119,7 +119,7 @@ class TestPipelineStepDefinition(TestCase):
 
         self.assertEqual(
             resp.get('result', {}).get('error'),
-            "Error fetching: Failed to fetch from URL. Status code: 404"
+            "Failed to fetch from URL. Status code: 404"
         )
 
     @patch('course_import.pipeline.requests.get')
