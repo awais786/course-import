@@ -48,19 +48,16 @@ class CourseImportView(GenericAPIView):
                 repr(course_key).encode('utf-8')
             ).decode('utf-8')
 
-            # moving this into method. They were causing issues in mocking in tests.
-            makedir(course_dir)
             file_url = request.data['file_url']
             filename = os.path.basename(urlparse(file_url).path)
 
             if not filename.endswith(IMPORTABLE_FILE_TYPES):
                 return HttpResponseBadRequest("Invalid file type.")
 
-            response = requests.get(file_url, stream=True)  # pylint: disable=missing-timeout
-            if response.status_code != 200:
-                return HttpResponseBadRequest("failed to download a file.")
+            # moving this into method. They were causing issues in mocking in tests.
+            makedir(course_dir)
 
-            storage_path = download_file(course_key, filename, response, course_dir)
+            storage_path = download_file(course_key, file_url, filename, course_dir)
 
             async_result = import_olx.delay(
                 request.user.id, str(course_key), storage_path, filename, request.LANGUAGE_CODE)
@@ -99,11 +96,15 @@ class CourseImportView(GenericAPIView):
             return HttpResponse(str(err), status=400)
 
 
-def download_file(course_key, filename, response, course_dir):
+def download_file(course_key, file_url, filename, course_dir):
     """
     Downloads a file from a given response and saves it to the course directory.
     Returns the storage path where the file is saved.
     """
+    response = requests.get(file_url, stream=True)  # pylint: disable=missing-timeout
+    if response.status_code != 200:
+        return HttpResponseBadRequest("Failed to download a file.")
+
     temp_filepath = course_dir / filename
     total_size = 0  # Track total size in bytes
 
@@ -118,7 +119,7 @@ def download_file(course_key, filename, response, course_dir):
 
     with open(temp_filepath, 'rb') as local_file:
         django_file = File(local_file)
-        storage_path = default_storage.save('olx_import/' + filename, django_file)
+        storage_path = course_import_export_storage.save('olx_import/' + filename, django_file)
 
     return storage_path
 
