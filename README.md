@@ -1,20 +1,25 @@
-# Course Import Plugin
+# CourseTemplates Plugin
 
-The `course-import` plugin is an integral part of the **course templates pipeline**, leveraging **Open edX Filters** to fetch and import course templates seamlessly into a course. This plugin provides functionality to retrieve course templates as JSON and facilitates their integration into the pipeline.
+A Python pipeline to fetch and filter templates from GitHub. This project provides a reusable class, `GithubTemplatesPipeline`, that validates source configurations, fetches data from GitHub repositories, and filters active templates for use in other applications.
 
 ---
 
 ## Features
 
-- **Open edX Filters Integration**: Uses `openedx-filters` to add custom filtering capabilities.
-- **Fetch Course Templates**: Fetch course templates in JSON format from external sources.
-- **Pipeline Integration**: Works within the course templates pipeline for streamlined operations.
-- **Import Templates**: Imports the retrieved templates into a specified course.
+- Filters Integration: Uses openedx-filters to add custom filtering capabilities.
+- Pipelinestep Integration: To fetch data from github urls.
+- Filter templates based on metadata (e.g., only include "active" templates).
+- Flexible architecture to support other sources like S3 in the future.
+- Comprehensive error handling and input validation.
 
 ---
 
-## Installation
+## Usage
+```python
+from course_import.filters import CourseTemplateRequested
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-org/course-import.git
+resp = CourseTemplateRequested.run_filter(
+    source_type='github', **{
+        'source_config': "https://raw.githubusercontent.com/awais786/courses/refs/heads/main/edly_courses.json"
+})
+```
