@@ -4,20 +4,10 @@ Tests for pipeline and filter.
 import json
 from unittest.mock import Mock, patch
 
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from course_import.filters import CourseTemplateRequested
 
 
-@override_settings(
-    OPEN_EDX_FILTERS_CONFIG={
-        "org.openedx.templates.fetch.requested.v1": {
-            "pipeline": [
-                "course_import.pipeline.GithubTemplatesPipeline",
-            ],
-            "fail_silently": False,
-        },
-    },
-)
 class TestPipelineStepDefinition(TestCase):
     """
     Test cases for pipeline step definitions in the Open edX filters.
@@ -28,13 +18,13 @@ class TestPipelineStepDefinition(TestCase):
         """
         Test that an error is returned if no source URL is provided.
         """
-        expected_result = {"error": "Source URL not provided", "status": 400}
-        result = CourseTemplateRequested.run_filter(
+        expected_result = {"error": "Source config not provided", "status": 400}
+        resp = CourseTemplateRequested.run_filter(
             source_type="github",
             **{'source_config': ""}
         )
 
-        self.assertEqual(result['source_config'], expected_result)
+        self.assertEqual(resp['result'], expected_result)
 
     @patch('course_import.pipeline.requests.get')
     def test_github_template_fetch(self, mock_get):
@@ -75,13 +65,13 @@ class TestPipelineStepDefinition(TestCase):
 
         mock_get.return_value = mock_response
 
-        result = CourseTemplateRequested.run_filter(
+        resp = CourseTemplateRequested.run_filter(
             source_type="github",
             **{'source_config': "https://edly_courses.json"}
         )
 
         # Assert the expected result
-        self.assertEqual(result['source_config'], parsed_json)
+        self.assertEqual(resp['result'], parsed_json)
 
     @patch('course_import.pipeline.requests.get')
     def test_github_template_fetch_empty_data(self, mock_get):
@@ -99,12 +89,12 @@ class TestPipelineStepDefinition(TestCase):
 
         mock_get.return_value = mock_response
 
-        result = CourseTemplateRequested.run_filter(
+        resp = CourseTemplateRequested.run_filter(
             source_type="github",
             **{'source_config': "https://no_data.json"}
         )
 
-        self.assertEqual(result['source_config'], [])
+        self.assertEqual(resp['result'], [])
 
     @patch('course_import.pipeline.requests.get')
     def test_github_template_fetch_invalid_url(self, mock_get):
@@ -122,13 +112,13 @@ class TestPipelineStepDefinition(TestCase):
 
         mock_get.return_value = mock_response
 
-        result = CourseTemplateRequested.run_filter(
+        resp = CourseTemplateRequested.run_filter(
             source_type="github",
             **{'source_config': "https://404.json"}
         )
 
         self.assertEqual(
-            result.get('source_config', {}).get('error'),
+            resp.get('result', {}).get('error'),
             "Error fetching: Failed to fetch from URL. Status code: 404"
         )
 
@@ -172,11 +162,11 @@ class TestPipelineStepDefinition(TestCase):
 
         mock_get.return_value = mock_response
 
-        result = CourseTemplateRequested.run_filter(
+        resp = CourseTemplateRequested.run_filter(
             source_type="github",
             **{'source_config': "https://edly_courses.json"}
         )
 
         # Assert the expected result
-        self.assertEqual(result['source_config'][0], parsed_json[1])
-        self.assertEqual(len(result['source_config']), 1)
+        self.assertEqual(resp['result'][0], parsed_json[1])
+        self.assertEqual(len(resp['result']), 1)

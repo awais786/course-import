@@ -65,4 +65,11 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }
 
-
+OPEN_EDX_FILTERS_CONFIG = {
+    "org.edly.templates.fetch.requested.v1": {
+        "pipeline": [
+            "course_import.pipeline.GithubTemplatesPipeline",
+        ],
+        "fail_silently": False,
+    },
+}

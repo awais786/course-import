@@ -26,7 +26,7 @@ class GithubTemplatesPipeline(PipelineStep):
             TemplateFetchException: If fetching templates fails.
         """
         if source_type == "github":
-            return {"source_config": self.fetch_from_github(**kwargs)}
+            return {"result": self.fetch_from_github(**kwargs)}
         else:
             return {}
 
@@ -35,13 +35,12 @@ class GithubTemplatesPipeline(PipelineStep):
         Fetches and processes raw file data directly from raw GitHub URL.
         """
         try:
-
-            source_url = kwargs.get('source_config')
+            source_config = kwargs.get('source_config')
             headers = kwargs.get('headers', {})
-            if not source_url:
-                return {"error": "Source URL not provided", "status": 400}
+            if not source_config:
+                return {"error": "Source config not provided", "status": 400}
 
-            response = requests.get(source_url, headers=headers)    # pylint: disable=missing-timeout
+            response = requests.get(source_config, headers=headers)    # pylint: disable=missing-timeout
             if response.status_code == 200:
                 if response.content.strip():  # Ensure the response content is not empty
                     try:

@@ -3,11 +3,12 @@ Package where filters related to the Course Authoring architectural.
 """
 from openedx_filters.tooling import OpenEdxPublicFilter
 
+
 class CourseTemplateRequested(OpenEdxPublicFilter):
     """
     Custom class for fetching templates from dynamic sources.
     """
-    filter_type = "org.openedx.templates.fetch.requested.v1"
+    filter_type = "org.edly.templates.fetch.requested.v1"
 
     @classmethod
     def run_filter(cls, source_type, **kwargs):
@@ -21,6 +22,5 @@ class CourseTemplateRequested(OpenEdxPublicFilter):
         Raises:
             TemplateFetchException: If fetching templates fails.
         """
-
         result = super().run_pipeline(source_type=source_type, **kwargs)
         return result
