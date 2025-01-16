@@ -16,6 +16,19 @@ A Python pipeline to fetch and filter templates from GitHub. This project provid
 
 ## Usage
 ```python
+
+# define pipeline setting
+
+OPEN_EDX_FILTERS_CONFIG = {
+    "org.edly.templates.fetch.requested.v1": {
+        "pipeline": [
+            "course_import.pipeline.GithubTemplatesPipeline",
+        ],
+        "fail_silently": False,
+    },
+}
+
+
 from course_import.filters import CourseTemplateRequested
 
 resp = CourseTemplateRequested.run_filter(
