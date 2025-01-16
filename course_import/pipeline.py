@@ -48,7 +48,7 @@ class GithubTemplatesPipeline(PipelineStep):
                 return {"error": f"Failed to fetch from URL. Status code: {response.status_code}"}
 
             if not response.content.strip():  # Ensure the response content is not empty
-                return []
+                return {"error": "Response content is empty", "status": 204}
 
             data = response.json()  # Attempt to parse JSON
             active_courses = [course for course in data if course['metadata'].get('active') is True]

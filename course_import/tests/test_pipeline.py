@@ -78,14 +78,11 @@ class TestPipelineStepDefinition(TestCase):
         """
         Test that an empty JSON response from GitHub is handled correctly.
         """
-        expected_result = b"""[]"""
-        decoded_result = expected_result.decode('utf-8')
-        parsed_json = json.loads(decoded_result)
-
+        expected_result = ""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.content = expected_result
-        mock_response.json.return_value = parsed_json
+        mock_response.json.return_value = ""
 
         mock_get.return_value = mock_response
 
@@ -94,7 +91,7 @@ class TestPipelineStepDefinition(TestCase):
             **{'source_config': "https://no_data.json"}
         )
 
-        self.assertEqual(resp['result'], [])
+        self.assertEqual(resp['result']['error'], "Response content is empty")
 
     @patch('course_import.pipeline.requests.get')
     def test_github_template_fetch_invalid_url(self, mock_get):
