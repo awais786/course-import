@@ -50,33 +50,17 @@ class CourseImportView(GenericAPIView):
 
             # moving this into method. They were causing issues in mocking in tests.
             makedir(course_dir)
+            file_url = request.data['file_url']
+            filename = os.path.basename(urlparse(file_url).path)
 
-            if 'file_url' in request.data:
-                file_url = request.data['file_url']
-                filename = os.path.basename(urlparse(file_url).path)
+            if not filename.endswith(IMPORTABLE_FILE_TYPES):
+                return HttpResponseBadRequest("Invalid file type.")
 
-                if not filename.endswith(IMPORTABLE_FILE_TYPES):
-                    return HttpResponseBadRequest("Invalid file type.")
+            response = requests.get(file_url, stream=True)  # pylint: disable=missing-timeout
+            if response.status_code != 200:
+                return HttpResponseBadRequest("failed to download a file.")
 
-                response = requests.get(file_url, stream=True)  # pylint: disable=missing-timeout
-                if response.status_code != 200:
-                    return HttpResponseBadRequest("failed to download a file.")
-
-                temp_filepath = course_dir / filename
-                total_size = 0  # Track total size in bytes
-                with open(temp_filepath, "wb") as temp_file:
-                    for chunk in response.iter_content(chunk_size=1024):
-                        if chunk:
-                            chunk_size = len(chunk)
-                            total_size += chunk_size
-                            temp_file.write(chunk)
-                log.info(f"Course import {course_key}: File downloaded from URL, file: {filename}")
-
-            log.info("Course import %s: Upload complete", course_key)
-
-            with open(temp_filepath, 'rb') as local_file:
-                django_file = File(local_file)
-                storage_path = course_import_export_storage.save('olx_import/' + filename, django_file)
+            storage_path = download_file(course_key, filename, response, course_dir)
 
             async_result = import_olx.delay(
                 request.user.id, str(course_key), storage_path, filename, request.LANGUAGE_CODE)
@@ -113,6 +97,30 @@ class CourseImportView(GenericAPIView):
             })
         except Exception as err:    # pylint: disable=broad-except
             return HttpResponse(str(err), status=400)
+
+
+def download_file(course_key, filename, response, course_dir):
+    """
+    Downloads a file from a given response and saves it to the course directory.
+    Returns the storage path where the file is saved.
+    """
+    temp_filepath = course_dir / filename
+    total_size = 0  # Track total size in bytes
+
+    with open(temp_filepath, "wb") as temp_file:
+        for chunk in response.iter_content(chunk_size=1024):
+            if chunk:
+                chunk_size = len(chunk)
+                total_size += chunk_size
+                temp_file.write(chunk)
+
+    log.info(f"Course import {course_key}: File downloaded from URL, file: {filename}")
+
+    with open(temp_filepath, 'rb') as local_file:
+        django_file = File(local_file)
+        storage_path = default_storage.save('olx_import/' + filename, django_file)
+
+    return storage_path
 
 
 def makedir(course_dir):

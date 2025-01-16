@@ -83,40 +83,69 @@ class PluginCourseImportViewTest(APITestCase):
         response = self.client.post(self.get_url(self.course_id), format='json')
         self.assertEqual(response.status_code, 403)
 
-    @patch('course_import.views.makedir')
-    def test_import_course_by_url_success(self, mock_isdir):
-        """
-        Test that a staff user can import a course using a valid file URL.
-        """
-        mock_isdir.return_value = True
-        self.client.login(username=self.staff_user.username, password=self.password)
+    from unittest.mock import patch, MagicMock
+    from django.test import TestCase
+    from rest_framework import status
 
-        file_url = "https://example.com/test-course.tar.gz"
-        with open(self.good_tar_fullpath, 'rb') as fp:
-            file_content = fp.read()
+    class CourseImportViewTestCase(TestCase):
+        def setUp(self):
+            # Setup the test data
+            self.staff_user = User.objects.create_user(
+                username='staff', password='password', is_staff=True, is_superuser=True
+            )
+            self.password = 'password'
+            self.course_id = 'course-v1:Test+Course+2024'
+            self.good_tar_fullpath = '/path/to/test-course.tar.gz'  # Path to the course file
 
-        with patch('requests.get') as mock_get, \
-            patch('cms.djangoapps.contentstore.tasks.import_olx.delay') as mock_delay:
+        @patch('os.path.isdir')  # Mocking os.path.isdir
+        @patch('requests.get')  # Mocking requests.get for the file download
+        @patch('django.core.files.storage.default_storage.save')  # Mocking file storage save method
+        @patch('cms.djangoapps.contentstore.tasks.import_olx.delay')  # Mocking the task delay method
+        def test_import_course_by_url_success(self, mock_isdir, mock_get, storage_, mock_delay):
+            """
+            Test that a staff user can import a course using a valid file URL.
+            """
+            mock_isdir.return_value = True  # Ensure directory exists
+            self.client.login(username=self.staff_user.username, password=self.password)  # Login the staff user
+
+            file_url = "https://example.com/test-course.tar.gz"
+
+            # Read the content of the file to simulate the actual file content
+            with open(self.good_tar_fullpath, 'rb') as fp:
+                file_content = fp.read()
+
+            # Mock the response of requests.get to simulate downloading the file
             mock_response = MagicMock()
             mock_response.status_code = 200
-            mock_response.iter_content.return_value = (
-                file_content[i:i + 1024] for i in range(0, len(file_content), 1024)
-            )
             mock_get.return_value = mock_response
 
+            # Mock the file save behavior
+            storage_.return_value = 'temp-path'
+
+            # Mock the result of importing the course
             mock_task_result = MagicMock()
             mock_task_result.task_id = "mocked-task-id"
             mock_delay.return_value = mock_task_result
 
+            # Perform the POST request to import the course
             response = self.client.post(
-                self.get_url(self.course_id),
+                self.get_url(self.course_id),  # Assuming get_url returns the correct URL for the view
                 {'file_url': file_url},
                 format='json'
             )
 
+            # Assert the expected results
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertIn('task_id', response.data)
             self.assertIn('filename', response.data)
+            self.assertEqual(response.data['task_id'], 'mocked-task-id')  # Ensure task ID is correct
+            self.assertEqual(response.data['filename'], 'test-course.tar.gz')  # Ensure filename is correct
+
+            # Additional assertions to check that mocks were called correctly
+            mock_get.assert_called_once_with(file_url)  # Ensure the file URL was fetched correctly
+            mock_delay.assert_called_once()  # Ensure that the import task was triggered
+            storage_.assert_called_once_with('olx_import/test-course.tar.gz',
+                                             MagicMock())  # Ensure the file was saved correctly
 
     def test_import_course_by_url_missing_file_url(self):
         """
