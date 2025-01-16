@@ -3,7 +3,8 @@ Pipeline steps for course templates. These will be move to some where else.
 """
 
 import requests
-from openedx_filters.filters import PipelineStep
+
+from openedx_filters import PipelineStep
 
 
 class GithubTemplatesPipeline(PipelineStep):

@@ -5,7 +5,7 @@ import json
 from unittest.mock import Mock, patch
 
 from django.test import TestCase, override_settings
-from openedx_filters.course_authoring.filters import CourseTemplateRequested
+from course_import.filters import CourseTemplateRequested
 
 
 @override_settings(

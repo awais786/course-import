@@ -58,7 +58,7 @@ newrelic==10.4.0
     # via edx-django-utils
 openedx-atlas==0.6.2
     # via -r requirements/base.in
-openedx-filters @ git+https://github.com/awais786/openedx-filters.git@course-templates-filters
+openedx-filters==1.12.0
     # via -r requirements/base.in
 path==17.1.0
     # via -r requirements/base.in

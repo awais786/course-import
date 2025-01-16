@@ -68,7 +68,7 @@ click-repl==0.3.0
     # via
     #   -r requirements/test.txt
     #   celery
-code-annotations==2.1.0
+code-annotations==2.2.0
     # via -r requirements/test.txt
 coverage[toml]==7.6.10
     # via
@@ -200,7 +200,7 @@ nh3==0.2.20
     # via readme-renderer
 openedx-atlas==0.6.2
     # via -r requirements/test.txt
-openedx-filters @ git+https://github.com/awais786/openedx-filters.git@course-templates-filters
+openedx-filters==1.12.0
     # via -r requirements/test.txt
 packaging==24.2
     # via
