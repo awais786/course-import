@@ -84,7 +84,7 @@ The following section showcases how thumbnails can be rendered using the `thumbn
 To import a course, use the link below: [Import AI Courses](https://raw.githubusercontent.com/awais786/courses/main/edly/AI%20Courses/course.2jyd4n_5.tar.gz)
 
 
-### Example Python Code to Import a Course via POST Request
+### Example Python Code to Import a Course via POST Request inside edx-platform
 
 This example demonstrates how to use Python and the `requests` library to send a POST request to the course import API.
 
