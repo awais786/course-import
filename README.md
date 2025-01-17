@@ -67,3 +67,9 @@ response will be list of contains all courses.
     }
 ]
 ```
+
+## Rendering Frontend Using JSON
+
+You can use the provided JSON response to dynamically render your frontend. The data includes essential fields like `courses_name`, `zip_url`, and metadata attributes (`title`, `description`, `thumbnail`, and `active`). These can be used to display course information in a structured and user-friendly way.
+
+
