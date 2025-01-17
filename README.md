@@ -117,4 +117,31 @@ response = requests.post(api_url, json=data, headers=headers)
 if response.status_code == 200:
     print('Import started successfully:', response.json())
 
+Out looks like
+{"task_id":"e264cb4e-ea1f-4884-ab01-a374eb1ddc4c"}
+
+
+Get the upload file status
+
+response = requests.post(api_url, json={'task_id': 'e264cb4e-ea1f-4884-ab01-a374eb1ddc4c'}, headers=headers)
+
+{"state":"Succeeded"}
+
 ```
+
+### Test using curl command
+
+```
+curl --location 'http://localhost:18010/api/courses/v0/import/course-v1:edX+DemoX+Demo_Course/' \
+--header 'Authorization: JWT token' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json' \
+--header 'X-CSRFToken: awtUGVlYyMwLWaaS' \
+--data-raw '{
+    "file_url": "https://raw.githubusercontent.com/awais786/courses/main/edly/AI%20Courses/course.v2_c3p0f.tar.gz"
+}'
+
+output 
+{"task_id":"e264cb4e-ea1f-4884-ab01-a374eb1ddc4c"}%
+
+````
