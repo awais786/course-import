@@ -26,39 +26,52 @@ IMPORTABLE_FILE_TYPES = ('.tar.gz', '.zip')
 
 class CourseImportView(GenericAPIView):
     """
-    This view handles course import operations.
+    API View for managing course import operations.
 
-    It provides an endpoint to import a course by URL.
-    The request should include either a `file_url`.
+    This view provides endpoints to:
+    - Import a course by downloading a file from a specified URL.
+    - Retrieve the status of the import task.
+
+    Attributes:
+        permission_classes (tuple): Permissions required to access this API.
     """
-
     permission_classes = (IsAuthenticated, IsAdminUser)
 
     def post(self, request, course_id):
         """
         Handles the POST request for importing a course.
+
+        Downloads a file from the provided URL, stores it, and triggers the course import task.
+
+        Args:
+            request (Request): The HTTP request object.
+            course_id (str): The ID of the course to import.
+
+        Returns:
+            Response: Contains the task ID and filename if successful.
+            HttpResponseBadRequest: If required parameters are missing or invalid.
+            HttpResponse: In case of any exceptions, an error message is returned.
         """
+        course_key = course_id
+        # Check for input source
+        if 'file_url' not in request.data:
+            return HttpResponseBadRequest("file_url missing.")
+
+        course_dir = path(settings.GITHUB_REPO_ROOT) / base64.urlsafe_b64encode(
+            repr(course_key).encode('utf-8')
+        ).decode('utf-8')
+
+        file_url = request.data['file_url']
+        filename = os.path.basename(urlparse(file_url).path)
+
+        if not filename.endswith(IMPORTABLE_FILE_TYPES):
+            return HttpResponseBadRequest("Invalid file type.")
+
+        # moving this into method. They were causing issues in mocking in tests.
+        makedir(course_dir)
+
         try:
-            course_key = course_id
-            # Check for input source
-            if 'file_url' not in request.data:
-                return HttpResponseBadRequest("file_url missing.")
-
-            course_dir = path(settings.GITHUB_REPO_ROOT) / base64.urlsafe_b64encode(
-                repr(course_key).encode('utf-8')
-            ).decode('utf-8')
-
-            file_url = request.data['file_url']
-            filename = os.path.basename(urlparse(file_url).path)
-
-            if not filename.endswith(IMPORTABLE_FILE_TYPES):
-                return HttpResponseBadRequest("Invalid file type.")
-
-            # moving this into method. They were causing issues in mocking in tests.
-            makedir(course_dir)
-
             storage_path = download_file(course_key, file_url, filename, course_dir)
-
             async_result = import_olx.delay(
                 request.user.id, str(course_key), storage_path, filename, request.LANGUAGE_CODE)
 
@@ -68,21 +81,29 @@ class CourseImportView(GenericAPIView):
             })
 
             return resp
-        except Exception as err:    # pylint: disable=broad-except
+        except Exception as err:  # pylint: disable=broad-except
             return HttpResponse(str(err), status=400)
 
     def get(self, request, course_id):
         """
-        Handles the Get request for import course task.
+        Handles the GET request to check the status of a course import task.
+
+        Args:
+            request (Request): The HTTP request object.
+            course_id (str): The ID of the course.
+
+        Returns:
+            Response: Contains the state of the task if found.
+            HttpResponse: If required parameters are missing or task is not found.
         """
         course_key = course_id
+        task_id = request.GET.get('task_id')
+        filename = request.GET.get('filename')
+
+        if not task_id or not filename:
+            return HttpResponse('Missing required parameters.', status=400)
+
         try:
-            task_id = request.GET.get('task_id')
-            filename = request.GET.get('filename')
-
-            if not task_id or not filename:
-                return HttpResponse('Missing required parameters.', status=400)
-
             args = {'course_key_string': str(course_key), 'archive_name': filename}
             name = CourseImportTask.generate_name(args)
             task_status = UserTaskStatus.objects.filter(name=name, task_id=task_id).first()
@@ -92,16 +113,28 @@ class CourseImportView(GenericAPIView):
             return Response({
                 'state': task_status.state
             })
-        except Exception as err:    # pylint: disable=broad-except
+        except Exception as err:  # pylint: disable=broad-except
             return HttpResponse(str(err), status=400)
 
 
 def download_file(course_key, file_url, filename, course_dir):
     """
-    Downloads a file from a given response and saves it to the course directory.
-    Returns the storage path where the file is saved.
+    Downloads a file from a given URL and saves it to the specified directory.
+
+    Args:
+        course_key (str): The key of the course being imported.
+        file_url (str): The URL of the file to download.
+        filename (str): The name of the file.
+        course_dir (path.Path): The directory to save the file.
+
+    Returns:
+        str: The storage path where the file is saved.
+
+    Raises:
+        HttpResponseBadRequest: If the download fails or is invalid.
     """
     response = requests.get(file_url, stream=True)  # pylint: disable=missing-timeout
+
     if response.status_code != 200:
         return HttpResponseBadRequest("Failed to download a file.")
 
@@ -126,7 +159,8 @@ def download_file(course_key, file_url, filename, course_dir):
 
 def makedir(course_dir):
     """
-    Create the specified directory if it does not already exist.
+    Creates a directory if it does not already exist.
+
     Args:
         course_dir (path.Path or str): The path of the directory to create.
     """

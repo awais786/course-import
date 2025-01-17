@@ -169,8 +169,7 @@ class PluginCourseImportViewTest(APITestCase):
         self.client.login(username=self.staff_user.username, password=self.password)
 
         file_url = "https://example.com/test-course.tar.gz"
-
-        with patch('requests.get') as mock_get:
+        with patch('course_import.views.requests.get') as mock_get:
             mock_get.side_effect = requests.exceptions.RequestException("Failed to download a file.")
 
             response = self.client.post(
