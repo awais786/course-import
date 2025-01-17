@@ -47,4 +47,23 @@ resp = CourseTemplateRequested.run_filter(
     source_type='github', **{
         'source_config': "https://raw.githubusercontent.com/awais786/courses/refs/heads/main/edly_courses.json"
 })
+
+response will be list of contains all courses.
+[
+    {
+      "source_type": "github",
+      "source_config": "https://raw.githubusercontent.com/awais786/courses/refs/heads/main/edly_courses.json",
+      "result": [
+        {
+          "courses_name": "AI Courses",
+          "zip_url": "https://raw.githubusercontent.com/awais786/courses/main/edly/AI%20Courses/course.2jyd4n_5.tar.gz",
+          "metadata": {
+            "title": "Introduction to Open edX",
+            "description": "Learn the fundamentals of the Open edX platform, including how to create and manage courses.",
+            "thumbnail": "https://discover.ilmx.org/wp-content/uploads/2024/01/Course-image-2.webp",
+            "active": true
+          }
+        }
+    }
+]
 ```
