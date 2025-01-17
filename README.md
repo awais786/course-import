@@ -18,6 +18,9 @@ A Python pipeline to fetch and filter templates from GitHub. This project provid
 - **Extensible Design**  
   Supports adding other data sources (e.g., S3) in the future, providing a flexible architecture for scaling the pipeline.
 
+- **Import Course API**
+    It enables asynchronous import of course files from a provided URL, allowing for background processing without blocking other operations.
+
 - **Error Handling**  
   Implements comprehensive validation and error management for source configurations, data integrity, and API calls to ensure reliability.
 
@@ -142,6 +145,6 @@ curl --location 'http://localhost:18010/api/courses/v0/import/course-v1:edX+Demo
 }'
 
 output 
-{"task_id":"e264cb4e-ea1f-4884-ab01-a374eb1ddc4c"}%
+{"task_id":"e264cb4e-ea1f-4884-ab01-a374eb1ddc4c"}
 
 ````
