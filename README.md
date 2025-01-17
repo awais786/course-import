@@ -81,9 +81,7 @@ The following section showcases how thumbnails can be rendered using the `thumbn
    - **Description**: Learn the fundamentals of the Open edX platform, including how to create and manage courses.  
 <img src="https://discover.ilmx.org/wp-content/uploads/2024/01/Course-image-2.webp" alt="AI Courses Thumbnail" width="300"/>
 
-To import a course, use the link below:
-
-### [Import AI Courses](https://raw.githubusercontent.com/awais786/courses/main/edly/AI%20Courses/course.2jyd4n_5.tar.gz)
+To import a course, use the link below: [Import AI Courses](https://raw.githubusercontent.com/awais786/courses/main/edly/AI%20Courses/course.2jyd4n_5.tar.gz)
 
 
 
