@@ -72,4 +72,16 @@ response will be list of contains all courses.
 
 You can use the provided JSON response to dynamically render your frontend. The data includes essential fields like `courses_name`, `zip_url`, and metadata attributes (`title`, `description`, `thumbnail`, and `active`). These can be used to display course information in a structured and user-friendly way.
 
+## Course Thumbnails
+
+The following section showcases how thumbnails can be rendered using the `thumbnail` URLs provided in the JSON response.
+
+### Example Thumbnails
+
+1. **AI Courses**
+   - **Title**: Introduction to Open edX  
+   - **Description**: Learn the fundamentals of the Open edX platform, including how to create and manage courses.  
+   - **Thumbnail**:  
+     ![AI Courses Thumbnail](https://discover.ilmx.org/wp-content/uploads/2024/01/Course-image-2.webp)
+
 
