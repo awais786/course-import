@@ -118,12 +118,12 @@ if response.status_code == 200:
     print('Import started successfully:', response.json())
 
 Out looks like
-{"task_id":"e264cb4e-ea1f-4884-ab01-a374eb1ddc4c"}
+{"task_id":"e264cb4e-ea1f-4884-ab01-a374eb1ddc4c", "filename": "course.2jyd4n_5.tar.gz" }
 
 
 Get the upload file status
 
-response = requests.post(api_url, json={'task_id': 'e264cb4e-ea1f-4884-ab01-a374eb1ddc4c'}, headers=headers)
+response = requests.get(api_url, json={'task_id': 'e264cb4e-ea1f-4884-ab01-a374eb1ddc4c'}, headers=headers)
 
 {"state":"Succeeded"}
 
