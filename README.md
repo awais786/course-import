@@ -84,4 +84,37 @@ The following section showcases how thumbnails can be rendered using the `thumbn
 To import a course, use the link below: [Import AI Courses](https://raw.githubusercontent.com/awais786/courses/main/edly/AI%20Courses/course.2jyd4n_5.tar.gz)
 
 
+### Example Python Code to Import a Course via POST Request
 
+This example demonstrates how to use Python and the `requests` library to send a POST request to the course import API.
+
+```python
+import requests
+
+# The API URL for importing the course
+
+course_id = "your_course_id_here"
+api_url = f"/course_import_api/import/{course_id}/"
+
+# The file URL to be imported coming from above json response
+file_url = "https://raw.githubusercontent.com/awais786/courses/main/edly/AI%20Courses/course.2jyd4n_5.tar.gz"
+
+# CSRF token (usually retrieved from a session or cookie)
+csrf_token = 'your_csrf_token_here'
+
+headers = {
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrf_token
+}
+
+data = {
+    'file_url': file_url
+}
+
+# Send the POST request
+response = requests.post(api_url, json=data, headers=headers)
+
+if response.status_code == 200:
+    print('Import started successfully:', response.json())
+
+```
